@@ -11,9 +11,10 @@ declare global {
 })
 export class MrudInpatientWlApp {
   @State() private relativePath = "";
-
   @Prop() basePath: string="";
-
+  @Prop() apiBase: string;
+  @Prop() ambulanceId: string;
+  
   componentWillLoad() {
     const baseUri = new URL(this.basePath, document.baseURI || "/").pathname;
 
@@ -54,8 +55,8 @@ export class MrudInpatientWlApp {
         ? <mrud-inpatient-wl-editor entry-id={entryId}
             oneditor-closed={ () => navigate("./list")} >
           </mrud-inpatient-wl-editor>
-        : <mrud-inpatient-wl-list
-          onentry-clicked={ (ev: CustomEvent<string>)=> navigate("./entry/" + ev.detail) } >
+        : <mrud-inpatient-wl-list ambulance-id={this.ambulanceId} api-base={this.apiBase}
+              onentry-clicked={ (ev: CustomEvent<string>)=> navigate("./entry/" + ev.detail) } >
           </mrud-inpatient-wl-list>
         }
   

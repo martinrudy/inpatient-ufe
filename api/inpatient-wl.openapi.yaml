@@ -1,0 +1,271 @@
+openapi: 3.0.0
+servers:
+  - description: Cluster Endpoint
+    url: /api
+info:
+  description: Ambulance Waiting List management for Web-In-Cloud system
+  version: "1.0.0"
+  title: Waiting List Api
+  contact:
+    email: rudolfmato@gmail.com
+  license:
+    name: CC BY 4.0
+    url: "https://creativecommons.org/licenses/by/4.0/"
+tags:
+  - name: inpatientWaitingList
+    description: Ambulance Waiting List API
+  - name: inpatientConditions
+    description: Patient conditions and symptoms handled in the inpatient
+paths:
+  "/waiting-list/{ambulanceId}/entries":
+    get:
+      tags:
+        - inpatientWaitingList
+      summary: Provides the inpatient waiting list
+      operationId: getWaitingListEntries
+      description: By using ambulanceId you get list of entries in inpatient waiting list
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular inpatient
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: value of the waiting list entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WaitingListEntry"
+              examples:
+                response:
+                  $ref: "#/components/examples/WaitingListEntriesExample"
+        "404":
+          description: Ambulance with such ID does not exist
+    post:
+      tags:
+        - inpatientWaitingList
+      summary: Saves new entry into waiting list
+      operationId: createWaitingListEntry
+      description: Use this method to store new entry into the waiting list.
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular inpatient
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WaitingListEntry"
+            examples:
+              request-sample:
+                $ref: "#/components/examples/WaitingListEntryExample"
+        description: Waiting list entry to store
+        required: true
+      responses:
+        "200":
+          description: >-
+            Value of the waiting list entry with re-computed estimated time of
+            inpatient entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WaitingListEntry"
+              examples:
+                updated-response:
+                  $ref: "#/components/examples/WaitingListEntryExample"
+        "400":
+          description: Missing mandatory properties of input object.
+        "404":
+          description: Ambulance with such ID does not exists
+        "409":
+          description: Entry with the specified id already exists
+  "/waiting-list/{ambulanceId}/entries/{entryId}":
+    get:
+      tags:
+        - inpatientWaitingList
+      summary: Provides details about waiting list entry
+      operationId: getWaitingListEntry
+      description: >-
+        By using ambulanceId and entryId you can details of particular entry
+        item inpatient.
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular inpatient
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: entryId
+          description: pass the id of the particular entry in the waiting list
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: value of the waiting list entries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WaitingListEntry"
+              examples:
+                response:
+                  $ref: "#/components/examples/WaitingListEntryExample"
+        "404":
+          description: Ambulance or Entry with such ID does not exists
+    put:
+      tags:
+        - inpatientWaitingList
+      summary: Updates specific entry
+      operationId: updateWaitingListEntry
+      description: Use this method to update content of the waiting list entry.
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular inpatient
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: entryId
+          description: pass the id of the particular entry in the waiting list
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WaitingListEntry"
+            examples:
+              request:
+                $ref: "#/components/examples/WaitingListEntryExample"
+        description: Waiting list entry to update
+        required: true
+      responses:
+        "200":
+          description: >-
+            value of the waiting list entry with re-computed estimated time of
+            inpatient entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WaitingListEntry"
+              examples:
+                response:
+                  $ref: "#/components/examples/WaitingListEntryExample"
+        "403":
+          description: >-
+            Value of the entryID and the data id is mismatching. Details are
+            provided in the response body.
+        "404":
+          description: Ambulance or Entry with such ID does not exists
+    delete:
+      tags:
+        - inpatientWaitingList
+      summary: Deletes specific entry
+      operationId: deleteWaitingListEntry
+      description: Use this method to delete the specific entry from the waiting list.
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular inpatient
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: entryId
+          description: pass the id of the particular entry in the waiting list
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Item deleted
+        "404":
+          description: Ambulance or Entry with such ID does not exists
+components:
+  schemas:
+    WaitingListEntry:
+      type: object
+      required: [id, capacity, allocatedCapacity]
+      properties:
+        id:
+          type: string
+          example: x321ab3
+          description: Unique id of the entry in this waiting list
+        room:
+          type: string
+          example: A213
+          description: Name of inpatient room in waiting list
+        patientId:
+          type: string
+          example: 460527-A213
+          description: Unique identifier of the patient known to Web-In-Cloud system
+        capacity:
+          type: integer
+          format: int32
+          example: 15
+          description: >-
+            Estimated duration of inpatient visit. If not provided then it will
+            be computed based on condition and inpatient settings
+        allocatedCapacity:
+          type: integer
+          format: int32
+          example: 15
+          description: >-
+            Estimated duration of inpatient visit. If not provided then it will
+            be computed based on condition and inpatient settings
+        freeCapacity:
+          type: integer
+          format: int32
+          example: 15
+          description: >-
+            Estimated duration of inpatient visit. If not provided then it will
+            be computed based on condition and inpatient settings
+        toPrepareCapacity:
+          type: integer
+          format: int32
+          example: 15
+          description: >-
+            Estimated duration of inpatient visit. If not provided then it will
+            be computed based on condition and inpatient settings
+      example:
+        $ref: "#/components/examples/WaitingListEntryExample"
+  examples:
+    WaitingListEntryExample:
+      summary: Ľudomír Zlostný waiting
+      description: |
+        Entry represents a patient waiting in the inpatient prep room with
+        defined symptoms
+      value:
+        id: x321ab3
+        room: A213
+        capacity: 4
+        allocatedCapacity: 2
+        freeCapacity: 2
+        toPrepareCapacity: 0
+    WaitingListEntriesExample:
+      summary: List of waiting patients
+      description: |
+        Example waiting list containing 2 patients
+      value:
+        - id: x321ab3
+          room: A213
+          capacity: 4
+          allocatedCapacity: 2
+          freeCapacity: 2
+          toPrepareCapacity: 0
+        - id: x341ab4
+          room: A243
+          capacity: 10
+          allocatedCapacity: 5
+          freeCapacity: 4
+          toPrepareCapacity: 1

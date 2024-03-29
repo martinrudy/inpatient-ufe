@@ -1,4 +1,5 @@
-import { Component, Event, EventEmitter,  Host, h } from '@stencil/core';
+import { Component, Event, EventEmitter, Host, Prop, State, h } from '@stencil/core';
+import { InpatientWaitingListApiFactory, WaitingListEntry } from '../../api/inpatient-wl';
 
 @Component({
   tag: 'mrud-inpatient-wl-list',
@@ -8,32 +9,26 @@ import { Component, Event, EventEmitter,  Host, h } from '@stencil/core';
 export class MrudInpatientWlList {
   @Event({ eventName: "entry-clicked"}) entryClicked: EventEmitter<string>;
   inpatientList: any[];
+  @Prop() apiBase: string;
+  @Prop() ambulanceId: string;
+  @State() errorMessage: string;
 
-  private async getInpatientListAsync(){
-    return await Promise.resolve(
-      [{
-          room: 'A213',
-          departementID: '10001',
-          capacity: 4,
-          allocatedCapacity: 2,
-          freeCapacity: 2,
-          toPrepareCapacity: 0
-      }, {
-          room: 'A315',
-          departementID: '10001',
-          capacity: 10,
-          allocatedCapacity: 6,
-          freeCapacity: 4,
-          toPrepareCapacity: 0
-      }, {
-          room: 'A313',
-          departementID: '10001',
-          capacity: 2,
-          allocatedCapacity: 2,
-          freeCapacity: 0,
-          toPrepareCapacity: 0
-      }]
-    );
+  inpatientRooms: WaitingListEntry[];
+
+  private async getInpatientListAsync(): Promise<WaitingListEntry[]>{
+    try {
+      const response = await
+        InpatientWaitingListApiFactory(undefined, this.apiBase).
+          getWaitingListEntries(this.ambulanceId)
+      if (response.status < 299) {
+        return response.data;
+      } else {
+        this.errorMessage = `Cannot retrieve list of waiting patients: ${response.statusText}`
+      }
+    } catch (err: any) {
+      this.errorMessage = `Cannot retrieve list of waiting patients: ${err.message || "unknown"}`
+    }
+    return [];
   }
   async componentWillLoad() {
     this.inpatientList = await this.getInpatientListAsync();
@@ -41,17 +36,21 @@ export class MrudInpatientWlList {
   render() {
     return (
       <Host>
-        <md-list>
-          {this.inpatientList.map((inpatient, index) =>
-            <md-list-item onClick={ () => this.entryClicked.emit(index.toString())}>
-              <div slot="headline">{inpatient.room}</div>
-              <div slot="supporting-text">{"Aloccated beds: " + inpatient.allocatedCapacity}</div>
-              <div slot="supporting-text">{"Free beds: " + inpatient.freeCapacity}</div>
-              <div slot="supporting-text">{"Beds needs to be prepare: " + inpatient.toPrepareCapacity}</div>
-                <md-icon slot="start">person</md-icon>
-            </md-list-item>
-          )}
-        </md-list>
+        {this.errorMessage
+          ? <div class="error">{this.errorMessage}</div>
+          :
+          <md-list>
+            {this.inpatientList.map((inpatient, index) =>
+              <md-list-item onClick={ () => this.entryClicked.emit(index.toString())}>
+                <div slot="headline">{inpatient.room}</div>
+                <div slot="supporting-text">{"Aloccated beds: " + inpatient.allocatedCapacity}</div>
+                <div slot="supporting-text">{"Free beds: " + inpatient.freeCapacity}</div>
+                <div slot="supporting-text">{"Beds needs to be prepare: " + inpatient.toPrepareCapacity}</div>
+                  <md-icon slot="start">person</md-icon>
+              </md-list-item>
+            )}
+          </md-list>
+        }
       </Host>
     );
   }
