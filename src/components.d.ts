@@ -12,6 +12,8 @@ export namespace Components {
         "basePath": string;
     }
     interface MrudInpatientWlEditor {
+        "ambulanceId": string;
+        "apiBase": string;
         "entryId": string;
     }
     interface MrudInpatientWlList {
@@ -81,6 +83,8 @@ declare namespace LocalJSX {
         "basePath"?: string;
     }
     interface MrudInpatientWlEditor {
+        "ambulanceId"?: string;
+        "apiBase"?: string;
         "entryId"?: string;
         "onEditor-closed"?: (event: MrudInpatientWlEditorCustomEvent<string>) => void;
     }

@@ -8,12 +8,10 @@ import { InpatientWaitingListApiFactory, WaitingListEntry } from '../../api/inpa
 })
 export class MrudInpatientWlList {
   @Event({ eventName: "entry-clicked"}) entryClicked: EventEmitter<string>;
-  inpatientList: any[];
+  inpatientList: WaitingListEntry[];
   @Prop() apiBase: string;
   @Prop() ambulanceId: string;
   @State() errorMessage: string;
-
-  inpatientRooms: WaitingListEntry[];
 
   private async getInpatientListAsync(): Promise<WaitingListEntry[]>{
     try {
@@ -40,8 +38,8 @@ export class MrudInpatientWlList {
           ? <div class="error">{this.errorMessage}</div>
           :
           <md-list>
-            {this.inpatientList.map((inpatient, index) =>
-              <md-list-item onClick={ () => this.entryClicked.emit(index.toString())}>
+            {this.inpatientList.map((inpatient) =>
+              <md-list-item onClick={ () => this.entryClicked.emit(inpatient.id)}>
                 <div slot="headline">{inpatient.room}</div>
                 <div slot="supporting-text">{"Aloccated beds: " + inpatient.allocatedCapacity}</div>
                 <div slot="supporting-text">{"Free beds: " + inpatient.freeCapacity}</div>
@@ -51,6 +49,10 @@ export class MrudInpatientWlList {
             )}
           </md-list>
         }
+        <md-filled-icon-button class="add-button"
+          onclick={() => this.entryClicked.emit("@new")}>
+          <md-icon>add</md-icon>
+        </md-filled-icon-button>
       </Host>
     );
   }

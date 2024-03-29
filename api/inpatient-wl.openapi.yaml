@@ -14,8 +14,6 @@ info:
 tags:
   - name: inpatientWaitingList
     description: Ambulance Waiting List API
-  - name: inpatientConditions
-    description: Patient conditions and symptoms handled in the inpatient
 paths:
   "/waiting-list/{ambulanceId}/entries":
     get:
