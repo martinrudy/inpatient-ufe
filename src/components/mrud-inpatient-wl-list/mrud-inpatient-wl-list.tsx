@@ -1,4 +1,4 @@
-import { Component, Host, h } from '@stencil/core';
+import { Component, Event, EventEmitter,  Host, h } from '@stencil/core';
 
 @Component({
   tag: 'mrud-inpatient-wl-list',
@@ -6,7 +6,7 @@ import { Component, Host, h } from '@stencil/core';
   shadow: true,
 })
 export class MrudInpatientWlList {
-
+  @Event({ eventName: "entry-clicked"}) entryClicked: EventEmitter<string>;
   inpatientList: any[];
 
   private async getInpatientListAsync(){
@@ -42,8 +42,8 @@ export class MrudInpatientWlList {
     return (
       <Host>
         <md-list>
-          {this.inpatientList.map(inpatient =>
-            <md-list-item>
+          {this.inpatientList.map((inpatient, index) =>
+            <md-list-item onClick={ () => this.entryClicked.emit(index.toString())}>
               <div slot="headline">{inpatient.room}</div>
               <div slot="supporting-text">{"Aloccated beds: " + inpatient.allocatedCapacity}</div>
               <div slot="supporting-text">{"Free beds: " + inpatient.freeCapacity}</div>
