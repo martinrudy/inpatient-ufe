@@ -23,6 +23,6 @@ describe('<pfx>-inpatient-wl-app', () => {
     });
     page.win.navigation = new EventTarget()
     const child = await page.root.shadowRoot.firstElementChild;
-    expect(child.tagName.toLocaleLowerCase()).toEqual("mrud-inpatient-wl-list");
+    expect(child.tagName.toLocaleLowerCase()).toEqual("mrud-ambulances-wl-list");
   });
 });
