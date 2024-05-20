@@ -13,8 +13,9 @@ export class MrudInpatientWlApp {
   @State() private relativePath = "";
   @Prop() basePath: string="";
   @Prop() apiBase: string;
-  @Prop() ambulanceId: string;
+  @Prop() ambulanceId: string="";
   
+
   componentWillLoad() {
     const baseUri = new URL(this.basePath, document.baseURI || "/").pathname;
 
@@ -48,6 +49,11 @@ export class MrudInpatientWlApp {
       const absolute = new URL(path, new URL(this.basePath, document.baseURI)).pathname;
       window.navigation.navigate(absolute)
     }
+
+    const setAmbulanceId = (path:string, ambulanceId) => {
+      this.ambulanceId = ambulanceId;
+      navigate(path);
+    }
   
     return (
       <Host>
@@ -56,11 +62,15 @@ export class MrudInpatientWlApp {
             ambulance-id={this.ambulanceId} api-base={this.apiBase}
             oneditor-closed={ () => navigate("./list")} >
           </mrud-inpatient-wl-editor>
+        : this.ambulanceId === ""
+        ? <mrud-ambulances-wl-list 
+            onEntry-clicked={(ev: CustomEvent<string>)=> setAmbulanceId("./list", ev.detail)}>
+          </mrud-ambulances-wl-list>
         : <mrud-inpatient-wl-list ambulance-id={this.ambulanceId} api-base={this.apiBase}
-              onentry-clicked={ (ev: CustomEvent<string>)=> navigate("./entry/" + ev.detail) } >
+              onentry-clicked={ (ev: CustomEvent<string>)=> navigate("./entry/" + ev.detail) } 
+              onHome-clicked={ (ev: CustomEvent<string>)=> setAmbulanceId("", ev.detail) } >
           </mrud-inpatient-wl-list>
         }
-  
       </Host>
     );
   }

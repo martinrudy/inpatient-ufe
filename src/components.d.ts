@@ -6,6 +6,8 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
+    interface MrudAmbulancesWlList {
+    }
     interface MrudInpatientWlApp {
         "ambulanceId": string;
         "apiBase": string;
@@ -21,6 +23,10 @@ export namespace Components {
         "apiBase": string;
     }
 }
+export interface MrudAmbulancesWlListCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMrudAmbulancesWlListElement;
+}
 export interface MrudInpatientWlEditorCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLMrudInpatientWlEditorElement;
@@ -30,6 +36,23 @@ export interface MrudInpatientWlListCustomEvent<T> extends CustomEvent<T> {
     target: HTMLMrudInpatientWlListElement;
 }
 declare global {
+    interface HTMLMrudAmbulancesWlListElementEventMap {
+        "entry-clicked": string;
+    }
+    interface HTMLMrudAmbulancesWlListElement extends Components.MrudAmbulancesWlList, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMrudAmbulancesWlListElementEventMap>(type: K, listener: (this: HTMLMrudAmbulancesWlListElement, ev: MrudAmbulancesWlListCustomEvent<HTMLMrudAmbulancesWlListElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMrudAmbulancesWlListElementEventMap>(type: K, listener: (this: HTMLMrudAmbulancesWlListElement, ev: MrudAmbulancesWlListCustomEvent<HTMLMrudAmbulancesWlListElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMrudAmbulancesWlListElement: {
+        prototype: HTMLMrudAmbulancesWlListElement;
+        new (): HTMLMrudAmbulancesWlListElement;
+    };
     interface HTMLMrudInpatientWlAppElement extends Components.MrudInpatientWlApp, HTMLStencilElement {
     }
     var HTMLMrudInpatientWlAppElement: {
@@ -55,6 +78,7 @@ declare global {
     };
     interface HTMLMrudInpatientWlListElementEventMap {
         "entry-clicked": string;
+        "home-clicked": string;
     }
     interface HTMLMrudInpatientWlListElement extends Components.MrudInpatientWlList, HTMLStencilElement {
         addEventListener<K extends keyof HTMLMrudInpatientWlListElementEventMap>(type: K, listener: (this: HTMLMrudInpatientWlListElement, ev: MrudInpatientWlListCustomEvent<HTMLMrudInpatientWlListElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -71,12 +95,16 @@ declare global {
         new (): HTMLMrudInpatientWlListElement;
     };
     interface HTMLElementTagNameMap {
+        "mrud-ambulances-wl-list": HTMLMrudAmbulancesWlListElement;
         "mrud-inpatient-wl-app": HTMLMrudInpatientWlAppElement;
         "mrud-inpatient-wl-editor": HTMLMrudInpatientWlEditorElement;
         "mrud-inpatient-wl-list": HTMLMrudInpatientWlListElement;
     }
 }
 declare namespace LocalJSX {
+    interface MrudAmbulancesWlList {
+        "onEntry-clicked"?: (event: MrudAmbulancesWlListCustomEvent<string>) => void;
+    }
     interface MrudInpatientWlApp {
         "ambulanceId"?: string;
         "apiBase"?: string;
@@ -92,8 +120,10 @@ declare namespace LocalJSX {
         "ambulanceId"?: string;
         "apiBase"?: string;
         "onEntry-clicked"?: (event: MrudInpatientWlListCustomEvent<string>) => void;
+        "onHome-clicked"?: (event: MrudInpatientWlListCustomEvent<string>) => void;
     }
     interface IntrinsicElements {
+        "mrud-ambulances-wl-list": MrudAmbulancesWlList;
         "mrud-inpatient-wl-app": MrudInpatientWlApp;
         "mrud-inpatient-wl-editor": MrudInpatientWlEditor;
         "mrud-inpatient-wl-list": MrudInpatientWlList;
@@ -103,6 +133,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "mrud-ambulances-wl-list": LocalJSX.MrudAmbulancesWlList & JSXBase.HTMLAttributes<HTMLMrudAmbulancesWlListElement>;
             "mrud-inpatient-wl-app": LocalJSX.MrudInpatientWlApp & JSXBase.HTMLAttributes<HTMLMrudInpatientWlAppElement>;
             "mrud-inpatient-wl-editor": LocalJSX.MrudInpatientWlEditor & JSXBase.HTMLAttributes<HTMLMrudInpatientWlEditorElement>;
             "mrud-inpatient-wl-list": LocalJSX.MrudInpatientWlList & JSXBase.HTMLAttributes<HTMLMrudInpatientWlListElement>;

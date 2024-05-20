@@ -8,6 +8,7 @@ import { InpatientWaitingListApiFactory, WaitingListEntry } from '../../api/inpa
 })
 export class MrudInpatientWlList {
   @Event({ eventName: "entry-clicked"}) entryClicked: EventEmitter<string>;
+  @Event({ eventName: "home-clicked"}) homeClicked: EventEmitter<string>;
   inpatientList: WaitingListEntry[];
   @Prop() apiBase: string;
   @Prop() ambulanceId: string;
@@ -18,6 +19,8 @@ export class MrudInpatientWlList {
       const response = await
         InpatientWaitingListApiFactory(undefined, this.apiBase).
           getWaitingListEntries(this.ambulanceId)
+
+      console.log(this.ambulanceId)
       if (response.status < 299) {
         return response.data;
       } else {
@@ -52,6 +55,9 @@ export class MrudInpatientWlList {
         <md-filled-icon-button class="add-button"
           onclick={() => this.entryClicked.emit("@new")}>
           <md-icon>add</md-icon>
+        </md-filled-icon-button>
+        <md-filled-icon-button class="home-button" onclick={() => this.homeClicked.emit("")}>
+          <md-icon>home</md-icon>
         </md-filled-icon-button>
       </Host>
     );
