@@ -31,7 +31,7 @@ export class MrudInpatientWlEditor {
         capacity: 15,
         allocatedCapacity: 10,
         freeCapacity: 5,
-        toPrepareCapacity: 0
+        toPrepareCapacity: 1
       };
       return this.entry;
     }
