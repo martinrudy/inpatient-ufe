@@ -50,6 +50,10 @@ export class MrudInpatientWlEditor {
        if (response.status < 299) {
           this.entry = response.data;
           this.isValid = true;
+          this.durationCapacity = this.entry.capacity;
+          this.durationAllocated = this.entry.allocatedCapacity;
+          this.durationFree = this.entry.freeCapacity;
+          this.durationPrepare = this.entry.toPrepareCapacity;
        } else {
           this.errorMessage = `Cannot retrieve list of waiting patients: ${response.statusText}`
        }
@@ -63,26 +67,19 @@ export class MrudInpatientWlEditor {
   }
   private handleSliderInputCapacity(event: Event) {
     this.durationCapacity = +(event.target as HTMLInputElement).value;
-    this.durationFree = +(event.target as HTMLInputElement).value;
-    this.entry.freeCapacity = this.durationFree;
   }
 
   private handleSliderInputAllocated(event: Event) {
     this.durationAllocated = +(event.target as HTMLInputElement).value;
-    this.durationFree = -(event.target as HTMLInputElement).value;
-    this.entry.freeCapacity = this.durationFree;
+
   }
 
   private handleSliderInputFree(event: Event) {
     this.durationFree = +(event.target as HTMLInputElement).value;
-    this.durationPrepare = -(event.target as HTMLInputElement).value;
-    this.entry.toPrepareCapacity = this.durationPrepare;
   }
 
   private handleSliderInputPrepare(event: Event) {
     this.durationPrepare = +(event.target as HTMLInputElement).value;
-    this.durationAllocated = -(event.target as HTMLInputElement).value;
-    this.entry.allocatedCapacity = this.durationAllocated;
   }
 
   render() {
