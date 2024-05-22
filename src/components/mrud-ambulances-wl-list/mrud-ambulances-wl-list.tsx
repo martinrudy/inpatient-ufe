@@ -1,4 +1,5 @@
-import { Component, Event, EventEmitter, Host, State, h } from '@stencil/core';
+import { Component, Event, EventEmitter, Host, Prop, State, h } from '@stencil/core';
+import { AmbulancesApiFactory, Ambulance } from '../../api/inpatient-wl';
 
 @Component({
   tag: 'mrud-ambulances-wl-list',
@@ -7,8 +8,10 @@ import { Component, Event, EventEmitter, Host, State, h } from '@stencil/core';
 })
 export class MrudAmbulancesWlList {
   @Event({ eventName: "entry-clicked"}) entryClicked: EventEmitter<string>;
-  @State() ambulances: string[] = ['option1', 'option2', 'option3'];
+  ambulances: Ambulance[];
   @State() selectedValues: string[] = [];
+  @State() errorMessage: string;
+  @Prop() apiBase: string;
 
   handleDropdownChange(event, index) {
     const newSelectedValues = [...this.selectedValues];
@@ -21,14 +24,35 @@ export class MrudAmbulancesWlList {
     // Implement your submit logic here
   }
 
+  private async getAmbulancesAsync(): Promise<Ambulance[]>{
+    try {
+      const response = await
+        AmbulancesApiFactory(undefined, this.apiBase).
+          getAmbulances()
+
+      if (response.status < 299) {
+        return response.data;
+      } else {
+        this.errorMessage = `Cannot retrieve list of waiting patients: ${response.statusText}`
+      }
+    } catch (err: any) {
+      this.errorMessage = `Cannot retrieve list of waiting patients: ${err.message || "unknown"}`
+    }
+    return [];
+  }
+
+  async componentWillLoad() {
+    this.ambulances = await this.getAmbulancesAsync();
+  }
+
   render() {
     return (
       <Host>
         {
           <md-list>
             {this.ambulances.map((ambulance) =>
-              <md-list-item onClick={ () => this.entryClicked.emit(ambulance)}>
-                <div slot="supporting-text">{ambulance}</div>
+              <md-list-item onClick={ () => this.entryClicked.emit(ambulance.id)}>
+                <div slot="supporting-text">{ambulance.name}</div>
                   <md-icon slot="start">person</md-icon>
               </md-list-item>
             )}

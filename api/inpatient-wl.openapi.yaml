@@ -14,6 +14,8 @@ info:
 tags:
   - name: inpatientWaitingList
     description: Ambulance Waiting List API
+  - name: ambulances
+    description: Ambulance details
 paths:
   "/waiting-list/{ambulanceId}/entries":
     get:
@@ -189,6 +191,76 @@ paths:
           description: Item deleted
         "404":
           description: Ambulance or Entry with such ID does not exists
+  "/ambulance":
+    post:
+      tags:
+        - ambulances
+      summary: Saves new ambulance definition
+      operationId: createAmbulance
+      description: Use this method to initialize new ambulance in the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Ambulance"
+            examples:
+              request-sample:
+                $ref: "#/components/examples/AmbulanceExample"
+        description: Ambulance details to store
+        required: true
+      responses:
+        "200":
+          description: >-
+            Value of stored ambulance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ambulance"
+              examples:
+                updated-response:
+                  $ref: "#/components/examples/AmbulanceExample"
+        "400":
+          description: Missing mandatory properties of input object.
+        "409":
+          description: Entry with the specified id already exists
+    get:
+      tags:
+        - ambulances
+      summary: Provides the ambulances list
+      operationId: getAmbulances
+      description: You get list of ambulances
+      responses:
+        "200":
+          description: list of ambulances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ambulance"
+              examples:
+                response:
+                  $ref: "#/components/examples/AmbulancesExample"
+
+  "/ambulance/{ambulanceId}":
+    delete:
+      tags:
+        - ambulances
+      summary: Deletes specific ambulance
+      operationId: deleteAmbulance
+      description: Use this method to delete the specific ambulance from the system.
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular ambulance
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Item deleted
+        "404":
+          description: Ambulance with such ID does not exist
 components:
   schemas:
     WaitingListEntry:
@@ -237,6 +309,24 @@ components:
             be computed based on condition and inpatient settings
       example:
         $ref: "#/components/examples/WaitingListEntryExample"
+    Ambulance:
+      type: object
+      required: [ "id", "name"]
+      properties:
+        id:
+          type: string
+          example: dentist-warenova
+          description: Unique identifier of the ambulance
+        name:
+          type: string
+          example: Chirurgia
+          description: Human readable display name of the ambulance
+        waitingList:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaitingListEntry'
+      example:
+        $ref: "#/components/examples/AmbulanceExample"
   examples:
     WaitingListEntryExample:
       summary: Ľudomír Zlostný waiting
@@ -267,3 +357,58 @@ components:
           allocatedCapacity: 5
           freeCapacity: 4
           toPrepareCapacity: 1
+    AmbulancesExample:
+      summary: List of ambulances
+      description: |
+        Example waiting list containing 2 patients
+      value:
+        - id: dp-chirurgia
+          name: Odelenie chirugie
+          waitingList:
+            - id: x321ab3
+              room: A213
+              capacity: 4
+              allocatedCapacity: 2
+              freeCapacity: 2
+              toPrepareCapacity: 0
+            - id: x341ab4
+              room: A243
+              capacity: 10
+              allocatedCapacity: 5
+              freeCapacity: 4
+              toPrepareCapacity: 1
+        - id: dp-interne
+          name: Interne Oddelenie
+          waitingList:
+            - id: x321ab3
+              room: A213
+              capacity: 4
+              allocatedCapacity: 2
+              freeCapacity: 2
+              toPrepareCapacity: 0
+            - id: x341ab4
+              room: A243
+              capacity: 10
+              allocatedCapacity: 5
+              freeCapacity: 4
+              toPrepareCapacity: 1
+    AmbulanceExample:
+      summary: Sample GP ambulance
+      description: |
+        Example of GP ambulance with waiting list and predefined conditions
+      value:
+        id: dp-chirurgia
+        name: Odelenie chirugie
+        waitingList:
+          - id: x321ab3
+            room: A213
+            capacity: 4
+            allocatedCapacity: 2
+            freeCapacity: 2
+            toPrepareCapacity: 0
+          - id: x341ab4
+            room: A243
+            capacity: 10
+            allocatedCapacity: 5
+            freeCapacity: 4
+            toPrepareCapacity: 1

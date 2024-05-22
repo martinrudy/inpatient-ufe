@@ -63,7 +63,7 @@ export class MrudInpatientWlApp {
             oneditor-closed={ () => navigate("./list")} >
           </mrud-inpatient-wl-editor>
         : this.ambulanceId === ""
-        ? <mrud-ambulances-wl-list 
+        ? <mrud-ambulances-wl-list api-base={this.apiBase}
             onEntry-clicked={(ev: CustomEvent<string>)=> setAmbulanceId("./list", ev.detail)}>
           </mrud-ambulances-wl-list>
         : <mrud-inpatient-wl-list ambulance-id={this.ambulanceId} api-base={this.apiBase}
