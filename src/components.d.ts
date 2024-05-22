@@ -7,6 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface MrudAmbulancesWlList {
+        "apiBase": string;
     }
     interface MrudInpatientWlApp {
         "ambulanceId": string;
@@ -103,6 +104,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface MrudAmbulancesWlList {
+        "apiBase"?: string;
         "onEntry-clicked"?: (event: MrudAmbulancesWlListCustomEvent<string>) => void;
     }
     interface MrudInpatientWlApp {

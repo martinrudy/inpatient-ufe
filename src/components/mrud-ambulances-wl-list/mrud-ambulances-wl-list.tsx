@@ -53,7 +53,7 @@ export class MrudAmbulancesWlList {
             {this.ambulances.map((ambulance) =>
               <md-list-item onClick={ () => this.entryClicked.emit(ambulance.id)}>
                 <div slot="supporting-text">{ambulance.name}</div>
-                  <md-icon slot="start">person</md-icon>
+                  <md-icon slot="start">home</md-icon>
               </md-list-item>
             )}
           </md-list>

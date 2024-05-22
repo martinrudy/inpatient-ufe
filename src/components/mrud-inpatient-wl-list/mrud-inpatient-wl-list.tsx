@@ -47,7 +47,7 @@ export class MrudInpatientWlList {
                 <div slot="supporting-text">{"Aloccated beds: " + inpatient.allocatedCapacity}</div>
                 <div slot="supporting-text">{"Free beds: " + inpatient.freeCapacity}</div>
                 <div slot="supporting-text">{"Beds needs to be prepare: " + inpatient.toPrepareCapacity}</div>
-                  <md-icon slot="start">person</md-icon>
+                  <md-icon slot="start">bedroom_child</md-icon>
               </md-list-item>
             )}
           </md-list>

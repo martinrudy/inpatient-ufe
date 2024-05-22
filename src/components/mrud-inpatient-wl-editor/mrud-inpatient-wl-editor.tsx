@@ -14,7 +14,10 @@ export class MrudInpatientWlEditor {
 
   @Event({eventName: "editor-closed"}) editorClosed: EventEmitter<string>;
 
-  @State() private duration = 15
+  @State() private durationCapacity = 15
+  @State() private durationAllocated = 10
+  @State() private durationFree = 4
+  @State() private durationPrepare = 1
   @State() entry: WaitingListEntry;
   @State() errorMessage:string;
   @State() isValid: boolean;
@@ -31,7 +34,7 @@ export class MrudInpatientWlEditor {
         capacity: 15,
         allocatedCapacity: 10,
         freeCapacity: 5,
-        toPrepareCapacity: 1
+        toPrepareCapacity: 0
       };
       return this.entry;
     }
@@ -58,9 +61,30 @@ export class MrudInpatientWlEditor {
   async componentWillLoad() {
     this.getWaitingEntryAsync();
   }
-  private handleSliderInput(event: Event) {
-    this.duration = +(event.target as HTMLInputElement).value;
+  private handleSliderInputCapacity(event: Event) {
+    this.durationCapacity = +(event.target as HTMLInputElement).value;
+    this.durationFree = +(event.target as HTMLInputElement).value;
+    this.entry.freeCapacity = this.durationFree;
   }
+
+  private handleSliderInputAllocated(event: Event) {
+    this.durationAllocated = +(event.target as HTMLInputElement).value;
+    this.durationFree = -(event.target as HTMLInputElement).value;
+    this.entry.freeCapacity = this.durationFree;
+  }
+
+  private handleSliderInputFree(event: Event) {
+    this.durationFree = +(event.target as HTMLInputElement).value;
+    this.durationPrepare = -(event.target as HTMLInputElement).value;
+    this.entry.toPrepareCapacity = this.durationPrepare;
+  }
+
+  private handleSliderInputPrepare(event: Event) {
+    this.durationPrepare = +(event.target as HTMLInputElement).value;
+    this.durationAllocated = -(event.target as HTMLInputElement).value;
+    this.entry.allocatedCapacity = this.durationAllocated;
+  }
+
   render() {
     if(this.errorMessage) {
       return (
@@ -90,7 +114,7 @@ export class MrudInpatientWlEditor {
           
         <div class="duration-slider">
           <span class="label">Predpokladana kapacita:&nbsp; </span>
-          <span class="label">{this.duration}</span>
+          <span class="label">{this.durationCapacity}</span>
           <span class="label">&nbsp;beds</span>
           <md-slider
             mmin="2" max="45" value={this.entry?.capacity || 15} ticks labeled
@@ -98,12 +122,12 @@ export class MrudInpatientWlEditor {
               if(this.entry) {
                this.entry.capacity
                   = Number.parseInt(this.handleInputEvent(ev))};
-              this.handleSliderInput(ev)
+              this.handleSliderInputCapacity(ev)
             } }></md-slider>
         </div>
         <div class="duration-slider">
           <span class="label">Predpokladana alokovana kapacita:&nbsp; </span>
-          <span class="label">{this.duration}</span>
+          <span class="label">{this.durationAllocated}</span>
           <span class="label">&nbsp;beds</span>
           <md-slider
             mmin="2" max="45" value={this.entry?.allocatedCapacity || 15} ticks labeled
@@ -111,12 +135,12 @@ export class MrudInpatientWlEditor {
               if(this.entry) {
                this.entry.allocatedCapacity
                   = Number.parseInt(this.handleInputEvent(ev))};
-              this.handleSliderInput(ev)
+              this.handleSliderInputAllocated(ev)
             } }></md-slider>
         </div>
         <div class="duration-slider">
           <span class="label">Predpokladana volna kapacita:&nbsp; </span>
-          <span class="label">{this.duration}</span>
+          <span class="label">{this.durationFree}</span>
           <span class="label">&nbsp;beds</span>
           <md-slider
             mmin="2" max="45" value={this.entry?.freeCapacity || 15} ticks labeled
@@ -124,12 +148,12 @@ export class MrudInpatientWlEditor {
               if(this.entry) {
                this.entry.freeCapacity
                   = Number.parseInt(this.handleInputEvent(ev))};
-              this.handleSliderInput(ev)
+              this.handleSliderInputFree(ev)
             } }></md-slider>
         </div>
         <div class="duration-slider">
           <span class="label">Predpokladana kapacita pre upratanie:&nbsp; </span>
-          <span class="label">{this.duration}</span>
+          <span class="label">{this.durationPrepare}</span>
           <span class="label">&nbsp;beds</span>
           <md-slider
             mmin="2" max="45" value={this.entry?.toPrepareCapacity || 15} ticks labeled
@@ -137,7 +161,7 @@ export class MrudInpatientWlEditor {
               if(this.entry) {
                this.entry.toPrepareCapacity
                   = Number.parseInt(this.handleInputEvent(ev))};
-              this.handleSliderInput(ev)
+              this.handleSliderInputPrepare(ev)
             } }></md-slider>
         </div>
 
