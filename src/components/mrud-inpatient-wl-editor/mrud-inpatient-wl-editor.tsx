@@ -78,8 +78,15 @@ export class MrudInpatientWlEditor {
             } }>
             <md-icon slot="leading-icon">king_bed</md-icon>
           </md-filled-text-field>
+          <md-filled-text-field label="Registračné izby" r
+          equired value={this.entry?.patientId}
+          oninput={ (ev: InputEvent) => {
+              if(this.entry) {this.entry.patientId = this.handleInputEvent(ev)}
+          } }>
+          <md-icon slot="leading-icon">fingerprint</md-icon>
+          </md-filled-text-field>
         </form>
-
+          
         <div class="duration-slider">
           <span class="label">Predpokladana kapacita:&nbsp; </span>
           <span class="label">{this.duration}</span>
