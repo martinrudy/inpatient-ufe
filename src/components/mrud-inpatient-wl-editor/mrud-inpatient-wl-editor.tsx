@@ -72,14 +72,15 @@ export class MrudInpatientWlEditor {
     return (
       <Host>
         <form ref={el => this.formElement = el}>
-          <md-filled-text-field label="Miestnost lozkovej casti"
+          <md-filled-text-field label="Miestnosť lôžkovej časti"
+            required value={this.entry?.room}
             oninput={ (ev: InputEvent) => {
                if(this.entry) {this.entry.room = this.handleInputEvent(ev)}
             } }>
             <md-icon slot="leading-icon">king_bed</md-icon>
           </md-filled-text-field>
-          <md-filled-text-field label="Registračné izby" r
-          equired value={this.entry?.patientId}
+          <md-filled-text-field label="Registračné čislo izby" 
+          required value={this.entry?.patientId}
           oninput={ (ev: InputEvent) => {
               if(this.entry) {this.entry.patientId = this.handleInputEvent(ev)}
           } }>
