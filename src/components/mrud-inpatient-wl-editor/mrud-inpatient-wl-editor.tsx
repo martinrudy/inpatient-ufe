@@ -169,8 +169,8 @@ export class MrudInpatientWlEditor {
   }
   private async updateEntry() {
     try {
-        const api = InpatientWaitingListApiFactory(undefined, this.apiBase);
         console.log(this.entry)
+        const api = InpatientWaitingListApiFactory(undefined, this.apiBase);
         const response
           = this.entryId === "@new"
           ? await api.createWaitingListEntry(this.ambulanceId, this.entry)
