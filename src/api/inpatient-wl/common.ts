@@ -145,6 +145,16 @@ export const toPathString = function (url: URL) {
 export const createRequestFunction = function (axiosArgs: RequestArgs, globalAxios: AxiosInstance, BASE_PATH: string, configuration?: Configuration) {
     return <T = unknown, R = AxiosResponse<T>>(axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
         const axiosRequestArgs = {...axiosArgs.options, url: (configuration?.basePath || basePath) + axiosArgs.url};
-        return axios.request<T, R>(axiosRequestArgs);
+        try {
+            return axios.request<T, R>(axiosRequestArgs);
+        } catch (error) {
+            if (error.response) {
+                return Promise.reject(error.response);
+            } else if (error.request) {
+                return Promise.reject(error.request);
+            } else {
+                return Promise.reject(error.message);
+            }
+        }
     };
 }
