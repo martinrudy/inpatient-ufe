@@ -29,7 +29,7 @@ export class MrudAmbulancesWlList {
       const response = await
         AmbulancesApiFactory(undefined, this.apiBase).
           getAmbulances()
-
+      console.log(response);
       if (response.status < 299) {
         return response.data;
       } else {
@@ -38,7 +38,7 @@ export class MrudAmbulancesWlList {
     } catch (err: any) {
       this.errorMessage = `Cannot retrieve list of waiting patients: ${err.message || "unknown"}`
     }
-    return [];
+    return [{id: "1", name: "Ambulance EROOORRRR CANOT RETRIEVE LIST OF AMBULANCES"}];
   }
 
   async componentWillLoad() {
